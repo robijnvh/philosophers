@@ -6,38 +6,48 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:29:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/12 11:51:11 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 14:21:44 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_one.h"
 
-void		ft_fork(t_philo *p)
+void		ft_snooze(int i)
 {
-	pthread_mutex_lock(&p->t->fork[p->fork_l]);
-	print(p, 1);
-	pthread_mutex_lock(&p->t->fork[p->fork_r]);
-	print(p, 1);
-}
+	int		time;
+	int		tmp;
 
-void		ft_drop_fork(t_philo *p)
-{
-	pthread_mutex_unlock(&p->t->fork[p->fork_l]);
-	pthread_mutex_unlock(&p->t->fork[p->fork_r]);
+	time = get_time();
+	time = time + i;
+	tmp = 0;
+	while (tmp < time)
+	{
+		tmp = get_time();
+		usleep(10);
+	}
 }
 
 void		ft_eat(t_philo *p)
 {
+	// grab fork
+	pthread_mutex_lock(&p->t->fork[p->fork_l]);
+	pthread_mutex_lock(&p->t->fork[p->fork_r]);
+	print(p, 1);
+	print(p, 1);
+	// start eating
 	print(p, 2);
 	p->time = get_time();
 	pthread_mutex_lock(&p->eat);
-	usleep(p->t->nb_of_meals * 1000);
+	ft_snooze(p->t->time_eat);
 	p->meals_eaten++;
 	pthread_mutex_unlock(&p->eat);
+	// drop fork
+	pthread_mutex_unlock(&p->t->fork[p->fork_l]);
+	pthread_mutex_unlock(&p->t->fork[p->fork_r]);
 }
 
 void		ft_sleep(t_philo *p)
 {
 	print(p, 3);
-	usleep(p->t->time_sleep * 1000);
+	ft_snooze(p->t->time_sleep);
 }

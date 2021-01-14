@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:50:42 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:09:52 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 11:54:53 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*text(int i)
 		return (" is thinking\n");
 	else if (i == 5)
 		return (" has died\n\e[0m");
-	return ("\e[91m\tLimit of meals reached\n\e[0m");
+	return ("\e[91m\tEnough meals eaten\n\e[0m");
 }
 
 void	print(t_philo *p, int i)

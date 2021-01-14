@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:29:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:06:31 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 11:06:14 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,10 @@ void		ft_eat(t_philo *p)
 {
 	print(p, 2);
 	p->time = get_time();
-	sem_wait(p->t->lock_eat);
+	sem_wait(p->lock_eat);
 	usleep(p->t->nb_of_meals * 1000);
 	p->meals_eaten++;
-	sem_post(p->t->lock_eat);
+	sem_post(p->lock_eat);
 }
 
 void		ft_sleep(t_philo *p)

@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 14:58:32 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:07:41 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 11:12:59 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,23 +34,24 @@ void	*is_he_dead(void *arg)
 	p = arg;
 	while (!p->t->done)
 	{
-		sem_wait(p->t->lock_eat);
+		sem_wait(p->lock_eat);
 		if (!p->t->done && get_time() - p->time > p->t->time_die)
 		{
 			print(p, 5);
-			sem_post(p->t->lock_eat);
+			sem_post(p->lock_eat);
 			return (NULL);
 		}
+		sem_post(p->lock_eat);
 		usleep(100);
 	}
 	return (NULL);
 }
 
-void	*start_routine(void *arg)
+void	*start_routine(void *inst)
 {
 	t_philo		*p;
 
-	p = arg;
+	p = inst;
 	p->time = get_time();
 	while (!p->t->done)
 	{
@@ -68,6 +69,7 @@ void	*start_routine(void *arg)
 		ft_sleep(p);
 		print(p, 4);
 	}
+	sem_post(p->t->lock_forks);
 	sem_post(p->t->lock_forks);
 	sem_post(p->t->lock_text);
 	return (NULL);

@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 11:06:48 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:17:53 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 12:51:07 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ typedef struct		s_data
 int					get_time(void);
 int					init_threads(t_data *t);
 void				print(t_philo *p, int i);
-void				ft_fork(t_philo *p);
-void				ft_drop_fork(t_philo *p);
 void				ft_eat(t_philo *p);
 void				ft_sleep(t_philo *p);
 int					clean_all(t_data *t, int i);

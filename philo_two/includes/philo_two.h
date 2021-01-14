@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/08 12:30:00 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:20:35 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 11:17:02 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@
 
 typedef	struct		s_philo
 {
+	char			*name;
 	int				meals_eaten;
 	int				nb;
 	int				time;
 	struct s_data	*t;
 	pthread_t		thread;
+	sem_t			*lock_eat;
 }					t_philo;
 
 typedef struct		s_data
@@ -45,7 +47,6 @@ typedef struct		s_data
 	int				cnt;
 	t_philo			*phil;
 	sem_t			*lock_forks;
-	sem_t			*lock_eat;
 	sem_t			*lock_text;
 }					t_data;
 
@@ -56,6 +57,6 @@ void				ft_fork(t_philo *p);
 void				ft_drop_fork(t_philo *p);
 void				ft_eat(t_philo *p);
 void				ft_sleep(t_philo *p);
-int					clean_all(t_data *t, int i);
+int					clean_all(t_data *t);
 
 #endif

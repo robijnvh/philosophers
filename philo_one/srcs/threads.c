@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 14:58:32 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/12 11:50:50 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 13:16:01 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void	*is_he_dead(void *arg)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&p->eat);
-		usleep(100);
 	}
 	return (NULL);
 }
@@ -55,13 +54,7 @@ void	*start_routine(void *arg)
 	p->time = get_time();
 	while (!p->t->done)
 	{
-		ft_fork(p);
-		if (p->t->done)
-			break ;
 		ft_eat(p);
-		if (p->t->done)
-			break ;
-		ft_drop_fork(p);
 		if (p->t->nb_of_meals > 0 && check_philo(p))
 			break ;
 		if (p->t->done)

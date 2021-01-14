@@ -6,37 +6,34 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 11:07:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:05:40 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 11:33:10 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_two.h"
 
-int		clean_all(t_data *t, int i)
+int		clean_all(t_data *t)
 {
+	int	i;
+
 	if (!t)
 		return (0);
-	// if (t->fork)
-	{
-		while (i < t->nb_of_philo)
-		{
-			// pthread_mutexattr_destroy((void*)&t->fork[i]);
-			i++;
-		}
-		// free(t->fork);
-	}
-	// pthread_mutexattr_destroy((void*)&t->text);
+	i = 0;
 	if (t->phil)
 	{
-		i = 0;
 		while (i < t->nb_of_philo)
 		{
-			// pthread_mutexattr_destroy((void*)&t->phil[i].eat);
+			sem_close(t->phil[i].lock_eat);
+			sem_unlink(t->phil[i].name);
+			free(t->phil[i].name);
 			i++;
 		}
 		free(t->phil);
-		t->phil = NULL;
 	}
+	sem_close(t->lock_forks);
+	sem_close(t->lock_text);
+	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_TEXT);
 	return (1);
 }
 
@@ -50,11 +47,8 @@ int		get_time(void)
 	return (i);
 }
 
-int		init_philo(t_data *t)
+int		init_philo(t_data *t, int i, char *tmp)
 {
-	int	i;
-
-	i = 0;
 	if (!(t->phil = malloc(sizeof(t_data) * t->nb_of_philo)))
 		return (2);
 	while (i < t->nb_of_philo)
@@ -62,9 +56,12 @@ int		init_philo(t_data *t)
 		t->phil[i].nb = i;
 		t->phil[i].meals_eaten = 0;
 		t->phil[i].t = t;
-		sem_unlink(ft_strjoin(SEM_EAT, ft_itoa(i)));
-		t->lock_eat = sem_open(ft_strjoin(SEM_EAT, ft_itoa(i)), O_CREAT, 0644, 1);
-		if (t->lock_eat == SEM_FAILED)
+		tmp = ft_itoa(i);
+		t->phil[i].name = ft_strjoin(SEM_EAT, tmp);
+		free(tmp);
+		sem_unlink(t->phil[i].name);
+		t->phil[i].lock_eat = sem_open(t->phil[i].name, O_CREAT, 0644, 1);
+		if (t->phil[i].lock_eat == SEM_FAILED)
 			return (3);
 		i++;
 	}
@@ -98,7 +95,7 @@ int		check_args(int argc, char **argv, t_data *t)
 		write(2, "Wrong input\n", 12);
 		return (1);
 	}
-	return (init_philo(t));
+	return (init_philo(t, 0, NULL));
 }
 
 int		main(int argc, char **argv)
@@ -113,15 +110,15 @@ int		main(int argc, char **argv)
 			write(2, "Error: Malloc failed\n", 21);
 		if (i == 3)
 			write(2, "Error: Semaphore failed\n", 24);
-		clean_all(&t, 0);
+		clean_all(&t);
 		return (0);
 	}
 	if (init_threads(&t))
 	{
-		clean_all(&t, 0);
+		clean_all(&t);
 		return (0);
 	}
-	clean_all(&t, 0);
+	clean_all(&t);
 	// while (1);  // check for leaks
 	return (0);
 }
