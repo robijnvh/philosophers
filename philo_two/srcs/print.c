@@ -6,11 +6,11 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:50:42 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 10:17:25 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 10:09:52 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo_one.h"
+#include "../includes/philo_two.h"
 
 char	*text(int i)
 {
@@ -31,7 +31,7 @@ void	print(t_philo *p, int i)
 {
 	char	*tmp;
 
-	pthread_mutex_lock(&p->t->text);
+	sem_wait(p->t->lock_text);
 	if (!p->t->done)
 	{
 		tmp = text(i);
@@ -53,5 +53,5 @@ void	print(t_philo *p, int i)
 			return ;
 		}
 	}
-	pthread_mutex_unlock(&p->t->text);
+	sem_post(p->t->lock_text);
 }

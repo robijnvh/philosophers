@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 11:07:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/12 11:51:35 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/14 10:18:46 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int		check_args(int argc, char **argv, t_data *t)
 {
 	if (argc < 5 || argc > 6)
 	{
-		write(2, "Wrong number of args\n", 22);
+		write(2, "Wrong number of arguments\n", 26);
 		return (1);
 	}
 	t->nb_of_philo = ft_atoi(argv[1]);
@@ -108,15 +108,14 @@ int		main(int argc, char **argv)
 	if ((i = check_args(argc, argv, &t)))
 	{
 		if (i == 2)
-			write(2, "Error: Malloc\n", 14);
+			write(2, "Error: Malloc failed\n", 22);
 		if (i == 3)
-			write(2, "Error: Mutex\n", 13);
+			write(2, "Error: Mutex failed\n", 21);
 		clean_all(&t, 0);
 		return (0);
 	}
 	if (init_threads(&t))
 	{
-		write(2, "Error: Mutex\n", 13);
 		clean_all(&t, 0);
 		return (0);
 	}
