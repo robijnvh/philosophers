@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/27 11:41:13 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/28 10:51:55 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/28 12:15:11 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,26 +38,19 @@ void	init_semaphores(int n, t_data *t)
 	t->thread = malloc(sizeof(pthread_t));
 }
 
-bool	check_arguments(char **argv, t_data *t)
+bool	check_arguments(char **argv, t_data *t, int argc)
 {
-	int	i;
-	int	args[5];
-
-	args[4] = -1;
-	i = 1;
-	while (argv[i])
-	{
-		args[i - 1] = ft_atoi(argv[i]);
-		if (args[i - 1] == 0)
-			return (true);
-		i++;
-	}
-	t->nb_of_philo = args[0];
-	t->time_die = args[1];
-	t->time_eat = args[2];
-	t->time_sleep = args[3];
-	t->nb_of_meals = args[4];
-	init_semaphores(args[0], t);
+	t->nb_of_meals = -1;
+	t->nb_of_philo = ft_atoi(argv[1]);
+	t->time_die = ft_atoi(argv[2]);
+	t->time_eat = ft_atoi(argv[3]);
+	t->time_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		t->nb_of_meals = ft_atoi(argv[5]);
+	if (t->nb_of_philo < 1 || t->time_die < 0 || t->time_eat < 0
+	|| t->time_sleep < 0 || (argc == 6 && t->nb_of_meals < 0))
+		return (write_error("Error: wrong input\n"));
+	init_semaphores(t->nb_of_philo, t);
 	return (false);
 }
 
@@ -68,9 +61,11 @@ int		main(int argc, char **argv)
 
 	if (argc < 5 || argc > 6)
 		return (write_error("Error: not right amount of arguments\n"));
-	if (check_arguments(argv, &t))
+	if (check_arguments(argv, &t, argc))
 		return (write_error("Error: wrong argument(s)\n"));
+	t.time = get_time();
 	ret = start_process(&t, 0);
 	free(t.thread);
+	// while (1); // check for leaks
 	return (ret);
 }

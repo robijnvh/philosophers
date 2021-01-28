@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/08 12:30:00 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/27 15:07:33 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/28 12:18:10 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,8 @@ typedef struct			s_data
 }						t_data;
 
 int						start_process(t_data *t, int i);
-int						is_food_ready(t_philo *p, int n);
+int						is_food_ready(t_philo *p);
+void					*check_if_dead(void *void_p);
 int						write_error(char *str);
 void					set_data(t_data *t, t_philo *p, int i);
 int						print(unsigned long time, int i, t_philo *p);
@@ -71,8 +72,7 @@ unsigned long int		get_time(void);
 void					ft_snooze(int i);
 void					ft_snooze_nano(int i);
 int						ft_atoi(const char *str);
-void					exit_routine(pthread_t *thread, t_philo *p);
-void					exit_routine_2(pthread_t *thread, t_philo *p);
+void					exit_routine(pthread_t *thread, t_philo *p, int sign);
 void					ft_putnbr_fd(int n, int fd);
 size_t					ft_strlen(const char *str);
 #endif
