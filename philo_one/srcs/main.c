@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 11:07:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 14:22:47 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/21 14:16:30 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,10 @@ int		init_philo(t_data *t)
 	i = 0;
 	while (i < t->nb_of_philo)
 	{
-		t->phil[i].nb = i; // philo's number
-		t->phil[i].meals_eaten = 0; // meals_eaten at 0
-		t->phil[i].fork_l = i; // left fork
-		t->phil[i].fork_r = (i + 1) % t->nb_of_philo; // right fork
+		t->phil[i].nb = i;
+		t->phil[i].meals_eaten = 0;
+		t->phil[i].fork_l = i;
+		t->phil[i].fork_r = (i + 1) % t->nb_of_philo;
 		if (pthread_mutex_init(&t->phil[i].eat, NULL))
 			return (3);
 		t->phil[i].t = t;
@@ -77,7 +77,7 @@ int		init_philo(t_data *t)
 	return (0);
 }
 
-int		check_args(int argc, char **argv, t_data *t)
+int		check_arguments(int argc, char **argv, t_data *t)
 {
 	if (argc < 5 || argc > 6)
 	{
@@ -104,8 +104,12 @@ int		main(int argc, char **argv)
 	t_data	t;
 	int		i;
 
-	memset(&t, 0, sizeof(t_data));
-	if ((i = check_args(argc, argv, &t)))
+	if (!memset(&t, 0, sizeof(t_data)))
+	{
+		write(2, "Error: Malloc failed\n", 22);
+		return (0);
+	}
+	if ((i = check_arguments(argc, argv, &t)))
 	{
 		if (i == 2)
 			write(2, "Error: Malloc failed\n", 22);
@@ -114,11 +118,7 @@ int		main(int argc, char **argv)
 		clean_all(&t, 0);
 		return (0);
 	}
-	if (init_threads(&t))
-	{
-		clean_all(&t, 0);
-		return (0);
-	}
+	init_threads(&t, 0);
 	clean_all(&t, 0);
 	// while (1);  // check for leaks
 	return (0);

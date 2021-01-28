@@ -6,11 +6,11 @@
 #    By: robijnvanhouts <robijnvanhouts@student.      +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/01/11 15:58:48 by robijnvanho   #+#    #+#                  #
-#    Updated: 2021/01/22 13:54:13 by robijnvanho   ########   odam.nl          #
+#    Updated: 2021/01/22 13:45:36 by robijnvanho   ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philo_two
+NAME = philo_three
 
 SRC_DIR = ./srcs
 
@@ -24,12 +24,12 @@ all: $(NAME)
 
 $(NAME): $(FILES)
 	@gcc $(FLAGS) -I ./includes/ $(FILES) -o $(NAME)
-	@echo "[philo_two] Compiled successfuly! [OK]\n"
+	@echo "[philo_three] Compiled successfuly! [OK]\n"
 
 clean:
 	/bin/rm -f *.o
 
 fclean: clean
-	/bin/rm -f philo_two
+	/bin/rm -f philo_three
 
 re: fclean all

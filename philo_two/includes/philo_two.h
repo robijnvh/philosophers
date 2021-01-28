@@ -6,7 +6,7 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/08 12:30:00 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 11:17:02 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/22 13:53:19 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <semaphore.h>
-# include "../../libft/libft.h"
 
 # define SEM_FORKS "forks"
 # define SEM_TEXT "text"
@@ -51,12 +50,18 @@ typedef struct		s_data
 }					t_data;
 
 int					get_time(void);
-int					init_threads(t_data *t);
-void				print(t_philo *p, int i);
-void				ft_fork(t_philo *p);
-void				ft_drop_fork(t_philo *p);
-void				ft_eat(t_philo *p);
-void				ft_sleep(t_philo *p);
+int					init_threads(t_data *t, int i);
+int					thread_join_failed(pthread_t thread);
+int					thread_create_failed(pthread_t thread);
+int					print(t_philo *p, int i);
+int					ft_eat(t_philo *p);
+int					ft_sleep(t_philo *p);
 int					clean_all(t_data *t);
+// utils
+int					ft_atoi(const char *str);
+char				*ft_itoa(int n);
+size_t				ft_strlen(const char *str);
+char				*ft_strjoin(char const *s1, char const *s2);
+void				ft_putnbr_fd(int n, int fd);
 
 #endif

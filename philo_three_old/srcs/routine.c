@@ -6,11 +6,11 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:29:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/21 14:35:55 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/28 11:12:26 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo_one.h"
+#include "../includes/philo_three.h"
 
 void	ft_snooze(int i)
 {
@@ -30,11 +30,11 @@ void	ft_snooze(int i)
 int		ft_eat(t_philo *p)
 {
 	// grab fork
-	if (pthread_mutex_lock(&p->t->fork[p->fork_l]) == -1)
-		return (1);
-	if (pthread_mutex_lock(&p->t->fork[p->fork_r]) == -1)
+	if (sem_wait(p->t->lock_forks) == -1)
 		return (1);
 	if (print(p, 1))
+		return (1);
+	if (sem_wait(p->t->lock_forks) == -1)
 		return (1);
 	if (print(p, 1))
 		return (1);
@@ -42,16 +42,18 @@ int		ft_eat(t_philo *p)
 	if (print(p, 2))
 		return (1);
 	p->time = get_time();
-	if (pthread_mutex_lock(&p->eat) == -1)
+	if (sem_wait(p->lock_eat) == -1)
 		return (1);
 	ft_snooze(p->t->time_eat);
 	p->meals_eaten++;
-	if (pthread_mutex_unlock(&p->eat) == -1)
+	if (sem_post(p->lock_eat) == -1)
+		return (1);
+	if (sem_post(p->gen_lock) == -1)
 		return (1);
 	// drop fork
-	if (pthread_mutex_unlock(&p->t->fork[p->fork_l]) == -1)
+	if (sem_post(p->t->lock_forks) == -1)
 		return (1);
-	if (pthread_mutex_unlock(&p->t->fork[p->fork_r]) == -1)
+	if (sem_post(p->t->lock_forks) == -1)
 		return (1);
 	return (0);
 }

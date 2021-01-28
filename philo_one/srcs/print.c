@@ -6,11 +6,25 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:50:42 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 11:55:20 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/21 14:41:51 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_one.h"
+
+int	thread_join_failed(pthread_t thread)
+{
+	free(thread);
+	write(2, "Error: pthread_join failed\n", 27);
+	return (0);
+}
+
+int	thread_create_failed(pthread_t thread)
+{
+	free(thread);
+	write(2, "Error: pthread_create failed\n", 29);
+	return (0);
+}
 
 char	*text(int i)
 {
@@ -27,31 +41,39 @@ char	*text(int i)
 	return ("\e[91m\tEnough meals eaten\n\e[0m");
 }
 
-void	print(t_philo *p, int i)
+void	write_text(t_philo *p, int i)
 {
-	char	*tmp;
+	char *tmp;
 
-	pthread_mutex_lock(&p->t->text);
+	tmp = text(i);
+	write(1, "\e[90m", 5);
+	ft_putnbr_fd(get_time() - p->t->time, 1);
+	write(1, "\e[0m", 4);
+	if (i == 5)
+		write(1, "\e[91m", 5);
+	if (i != 6)
+	{
+		write(1, "\tPhilosopher ", 13);
+		ft_putnbr_fd(p->nb + 1, 1);
+	}
+	write(1, tmp, ft_strlen(tmp));
+	tmp = NULL;
+}
+
+int		print(t_philo *p, int i)
+{
+	if (pthread_mutex_lock(&p->t->text) == -1)
+		return (1);
 	if (!p->t->done)
 	{
-		tmp = text(i);
-		write(1, "\e[90m", 5);
-		ft_putnbr_fd(get_time() - p->t->time, 1);
-		write(1, "\e[0m", 4);
-		if (i == 5)
-			write(1, "\e[91m", 5);
-		if (i != 6)
-		{
-			write(1, "\tPhilosopher ", 13);
-			ft_putnbr_fd(p->nb + 1, 1);
-		}
-		write(1, tmp, ft_strlen(tmp));
-		tmp = NULL;
+		write_text(p, i);
 		if (i == 5 || i == 6)
 		{
 			p->t->done = 1;
-			return ;
+			return (0);
 		}
 	}
-	pthread_mutex_unlock(&p->t->text);
+	if (pthread_mutex_unlock(&p->t->text) == -1)
+		return (1);
+	return (0);
 }

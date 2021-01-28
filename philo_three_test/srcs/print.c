@@ -5,26 +5,12 @@
 /*                                                     +:+                    */
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2021/01/11 15:50:42 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/21 14:40:27 by robijnvanho   ########   odam.nl         */
+/*   Created: 2021/01/27 12:27:34 by robijnvanho   #+#    #+#                 */
+/*   Updated: 2021/01/27 14:05:39 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo_two.h"
-
-int		thread_join_failed(pthread_t thread)
-{
-	free(thread);
-	write(2, "Error: pthread_join failed\n", 27);
-	return (0);
-}
-
-int		thread_create_failed(pthread_t thread)
-{
-	free(thread);
-	write(2, "Error: pthread_create failed\n", 29);
-	return (0);
-}
+#include "../includes/philo_three.h"
 
 char	*text(int i)
 {
@@ -41,13 +27,13 @@ char	*text(int i)
 	return ("\e[91m\tEnough meals eaten\n\e[0m");
 }
 
-void	write_text(t_philo *p, int i)
+void	write_text(t_philo *p, int i, unsigned long time)
 {
 	char *tmp;
 
 	tmp = text(i);
 	write(1, "\e[90m", 5);
-	ft_putnbr_fd(get_time() - p->t->time, 1);
+	ft_putnbr_fd(time - p->time, 1);
 	write(1, "\e[0m", 4);
 	if (i == 5)
 		write(1, "\e[91m", 5);
@@ -60,20 +46,13 @@ void	write_text(t_philo *p, int i)
 	tmp = NULL;
 }
 
-int		print(t_philo *p, int i)
+int		print(unsigned long time, int i, t_philo *p)
 {
-	if (sem_wait(p->t->lock_text) == -1)
-		return (1);
-	if (!p->t->done)
-	{
-		write_text(p, i);
-		if (i == 5 || i == 6)
-		{
-			p->t->done = 1;
-			return (0);
-		}
-	}
-	if (sem_post(p->t->lock_text) == -1)
-		return (1);
+	if (sem_wait(p->p_lock_text) == -1)
+		return (2);
+	write_text(p, i, time);
+	if (p->last == 0)
+		if (sem_post(p->p_lock_text) == -1)
+			return (2);
 	return (0);
 }

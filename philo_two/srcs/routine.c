@@ -6,38 +6,59 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:29:51 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/14 11:06:14 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/21 14:36:37 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo_two.h"
 
-void		ft_fork(t_philo *p)
+void	ft_snooze(int i)
 {
-	sem_wait(p->t->lock_forks);
-	sem_wait(p->t->lock_forks);
-	print(p, 1);
-	print(p, 1);
+	int		time;
+	int		tmp;
+
+	time = get_time();
+	time = time + i;
+	tmp = 0;
+	while (tmp < time)
+	{
+		tmp = get_time();
+		usleep(10);
+	}
 }
 
-void		ft_drop_fork(t_philo *p)
+int		ft_eat(t_philo *p)
 {
-	sem_post(p->t->lock_forks);
-	sem_post(p->t->lock_forks);
-}
-
-void		ft_eat(t_philo *p)
-{
-	print(p, 2);
+	// grab fork
+	if (sem_wait(p->t->lock_forks) == -1)
+		return (1);
+	print(p, 1);
+	if (sem_wait(p->t->lock_forks) == -1)
+		return (1);
+	if (print(p, 1))
+		return (1);
+	// start eating
+	if (print(p, 2))
+		return (1);
 	p->time = get_time();
-	sem_wait(p->lock_eat);
-	usleep(p->t->nb_of_meals * 1000);
+	if (sem_wait(p->lock_eat) == -1)
+		return (1);
+	ft_snooze(p->t->time_eat);
 	p->meals_eaten++;
-	sem_post(p->lock_eat);
+	if (sem_post(p->lock_eat) == -1)
+		return (1);
+	// drop fork
+	if (sem_post(p->t->lock_forks) == -1)
+		return (1);
+	if (sem_post(p->t->lock_forks) == -1)
+		return (1);
+	return (0);
 }
 
-void		ft_sleep(t_philo *p)
+int		ft_sleep(t_philo *p)
 {
-	print(p, 3);
-	usleep(p->t->time_sleep * 1000);
+	if (print(p, 3))
+		return (1);
+	ft_snooze(p->t->time_sleep);
+	return (0);
 }

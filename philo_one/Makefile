@@ -1,4 +1,4 @@
-# **************************************************************************** #
+ # **************************************************************************** #
 #                                                                              #
 #                                                         ::::::::             #
 #    Makefile                                           :+:    :+:             #
@@ -14,7 +14,7 @@ NAME = philo_one
 
 SRC_DIR = ./srcs
 
-SRC =	main.c threads.c routine.c print.c
+SRC =	main.c threads.c routine.c print.c utils.c utils2.c
 
 FILES = $(addprefix $(SRC_DIR)/, $(SRC))
 
@@ -23,16 +23,11 @@ FLAGS = -Wall -Wextra -Werror
 all: $(NAME)
 
 $(NAME): $(FILES)
-	@echo "Making libft.a"
-	@make re -s -C ../libft
-	@cp ../libft/libft.a .
-	@gcc $(FLAGS) -I ./includes/ $(FILES) libft.a -o $(NAME)
+	@gcc $(FLAGS) -I ./includes/ $(FILES) -o $(NAME)
 	@echo "[philo_one] Compiled successfuly! [OK]\n"
 
 clean:
 	/bin/rm -f *.o
-	@make clean -s -C ../libft
-	/bin/rm -f libft.a
 
 fclean: clean
 	/bin/rm -f philo_one

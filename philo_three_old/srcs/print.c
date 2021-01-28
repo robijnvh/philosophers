@@ -6,17 +6,21 @@
 /*   By: robijnvanhouts <robijnvanhouts@student.      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/01/11 15:50:42 by robijnvanho   #+#    #+#                 */
-/*   Updated: 2021/01/21 14:40:27 by robijnvanho   ########   odam.nl         */
+/*   Updated: 2021/01/22 14:30:09 by robijnvanho   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo_two.h"
+#include "../includes/philo_three.h"
 
-int		thread_join_failed(pthread_t thread)
+char	*set_name(char *str, int i)
 {
-	free(thread);
-	write(2, "Error: pthread_join failed\n", 27);
-	return (0);
+	char	*tmp;
+	char	*name;
+
+	tmp = ft_itoa(i);
+	name = ft_strjoin(str, tmp);
+	free(tmp);
+	return (name);
 }
 
 int		thread_create_failed(pthread_t thread)
@@ -64,12 +68,12 @@ int		print(t_philo *p, int i)
 {
 	if (sem_wait(p->t->lock_text) == -1)
 		return (1);
-	if (!p->t->done)
+	if (p->t->done != -1)
 	{
 		write_text(p, i);
 		if (i == 5 || i == 6)
 		{
-			p->t->done = 1;
+			p->t->done = -1;
 			return (0);
 		}
 	}
